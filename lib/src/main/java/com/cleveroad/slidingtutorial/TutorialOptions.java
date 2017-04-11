@@ -24,6 +24,8 @@
 package com.cleveroad.slidingtutorial;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -35,6 +37,9 @@ import android.view.View;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class TutorialOptions {
 
+    private Typeface mSkipTypeface;
+    private float mSkipSize;
+    private String mSkipText;
     private boolean mAutoRemoveTutorialFragment;
     private boolean mUseInfiniteScroll;
     private int mPagesCount;
@@ -46,7 +51,8 @@ public final class TutorialOptions {
 
     @SuppressWarnings("unchecked")
     static TutorialOptions create(@NonNull Builder builder) {
-        TutorialOptions tutorialOptions =  new TutorialOptions(builder.isUseAutoRemoveTutorialFragment(),
+        TutorialOptions tutorialOptions =  new TutorialOptions(builder.getSkipTypeface(),
+                builder.getSkipSize(), builder.mSkipText, builder.isUseAutoRemoveTutorialFragment(),
                 builder.isUseInfiniteScroll(), builder.getPagesCount(), builder.getPagesColors(),
                 builder.getOnSkipClickListener(), builder.getTutorialPageProvider(),
                 builder.getIndicatorOptions());
@@ -54,11 +60,15 @@ public final class TutorialOptions {
         return tutorialOptions;
     }
 
-    private TutorialOptions(boolean autoRemoveTutorialFragment, boolean useInfiniteScroll,
+    private TutorialOptions(Typeface skipTypeface, float skipSize, String skipText,
+                            boolean autoRemoveTutorialFragment, boolean useInfiniteScroll,
                             int pagesCount, @NonNull int[] pagesColors,
                             @NonNull View.OnClickListener onSkipClickListener,
                             @NonNull TutorialPageProvider tutorialPageProvider,
                             @NonNull IndicatorOptions indicatorOptions) {
+        mSkipTypeface = skipTypeface;
+        mSkipSize = skipSize;
+        mSkipText = skipText;
         mAutoRemoveTutorialFragment = autoRemoveTutorialFragment;
         mUseInfiniteScroll = useInfiniteScroll;
         mPagesCount = ValidationUtil.checkPagesCount(pagesCount);
@@ -66,6 +76,18 @@ public final class TutorialOptions {
         mTutorialPageProvider = ValidationUtil.checkNotNull(tutorialPageProvider, "TutorialPageProvider can't be null");
         mIndicatorOptions = ValidationUtil.checkNotNull(indicatorOptions);
         mOnSkipClickListener = onSkipClickListener;
+    }
+
+    Typeface getSkipTypeface() {
+        return mSkipTypeface;
+    }
+
+    float getSkipSize() {
+        return mSkipSize;
+    }
+
+    String getSkipText() {
+        return mSkipText;
     }
 
     boolean isAutoRemoveTutorialFragment() {
@@ -121,6 +143,9 @@ public final class TutorialOptions {
      */
     public final static class Builder<TFragment> {
         private final Class<TFragment> mClass;
+        private Typeface mSkipTypeface;
+        private float mSkipSize = -1;
+        private String mSkipText;
         private boolean mAutoRemoveTutorialFragment;
         private boolean mUseInfiniteScroll;
         private int mPagesCount;
@@ -134,6 +159,18 @@ public final class TutorialOptions {
         private Builder(@NonNull Context context, Class<TFragment> aClass) {
             mContext = ValidationUtil.checkNotNull(context).getApplicationContext();
             mClass = aClass;
+        }
+
+        Typeface getSkipTypeface() {
+            return mSkipTypeface;
+        }
+
+        float getSkipSize() {
+            return mSkipSize;
+        }
+
+        String getSkipText() {
+            return mSkipText;
         }
 
         boolean isUseAutoRemoveTutorialFragment() {
@@ -162,6 +199,40 @@ public final class TutorialOptions {
 
         View.OnClickListener getOnSkipClickListener() {
             return mOnSkipClickListener;
+        }
+
+        /**
+         * Sets the typeface and style in which the text should be displayed
+         * for the skip button
+         *
+         * @param skipTypeface Typeface text
+         * @return current {@link Builder}
+         */
+        public Builder<TFragment> setSkipTypeface(@NonNull Typeface skipTypeface) {
+            mSkipTypeface = skipTypeface;
+            return this;
+        }
+
+        /**
+         * Set text size in scaled pixel units for the skip button
+         *
+         * @param skipSize float text size in sp
+         * @return current {@link Builder}
+         */
+        public Builder<TFragment> setSkipSize(@FloatRange(from = 10, to = 100) float skipSize) {
+            mSkipSize = skipSize;
+            return this;
+        }
+
+        /**
+         * Set the text to display for the skip button
+         *
+         * @param skipText String to display
+         * @return current {@link Builder}
+         */
+        public Builder<TFragment> setSkipText(String skipText) {
+            mSkipText = skipText;
+            return this;
         }
 
         /**

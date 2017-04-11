@@ -37,6 +37,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +101,15 @@ final class TutorialImpl<TFragment> {
         }
         if (mButtonSkip != null) {
             mButtonSkip.setOnClickListener(mTutorialOptions.getOnSkipClickListener());
+            if (mTutorialOptions.getSkipTypeface() != null) {
+                ((TextView)mButtonSkip).setTypeface(mTutorialOptions.getSkipTypeface());
+            }
+            if (mTutorialOptions.getSkipSize() != -1) {
+                ((TextView)mButtonSkip).setTextSize(mTutorialOptions.getSkipSize());
+            }
+            if (mTutorialOptions.getSkipText() != null) {
+                ((TextView)mButtonSkip).setText(mTutorialOptions.getSkipText());
+            }
         }
 
         if (mTutorialOptions.isUseInfiniteScroll()) {
